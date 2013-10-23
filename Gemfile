@@ -11,5 +11,5 @@ gem 'binding_of_caller'
 
 gem 'json'
 
-gem 'nppes', github: 'jeyboy/nppes' #github: 'Pelesend/nppes'
+gem 'nppes', github: 'jeyboy/nppes', branch: 'master' #github: 'Pelesend/nppes'
 

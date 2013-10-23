@@ -8,9 +8,8 @@ require 'pry'
 require 'nppes'
 require "better_errors"
 require "pry-byebug"
+require 'env'
 
-dbconfig = YAML::load(File.open(File.join(File.dirname(__FILE__), 'database.yml')))
-ActiveRecord::Base.establish_connection(dbconfig['npi'])
 
 
 class Speciality < ActiveRecord::Base
