@@ -5,12 +5,10 @@ require 'json'
 require 'active_record'
 require 'yaml'
 require 'pry'
-require 'nppes'
 require "better_errors"
 require "pry-byebug"
-require 'env'
-
-
+require 'nppes'
+require_relative 'env'
 
 class Speciality < ActiveRecord::Base
   has_many :provider_specialities
