@@ -4,11 +4,10 @@ require 'sinatra'
 require 'json'
 require 'active_record'
 require 'yaml'
-require 'pry'
-require "better_errors"
-require "pry-byebug"
 require 'nppes'
+require 'byebug'
 require_relative 'env'
+
 
 class Speciality < ActiveRecord::Base
   has_many :provider_specialities

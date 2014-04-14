@@ -2,6 +2,7 @@ require_relative 'lib/env'
 require 'pry'
 require 'pry-byebug'
 require 'delayed_job_active_record'
+
 namespace :db do
   desc "Migrate the database"
   task :migrate do
@@ -12,7 +13,6 @@ end
 #require File.expand_path('../my_main_file', __FILE__)
 
 namespace :jobs do
-
   @worker_options={destroy_failed_jobs: false, sleep_delay: 1, max_attempts: 100, max_run_time: 200000.seconds, read_ahead: 10, default_queue_name: 'default', delay_jobs: true, quiet: false}
   desc "Clear the delayed_job queue."
   task :clear do
@@ -59,7 +59,8 @@ namespace :nppes do
   def run_env
     unless already_run?
       STDOUT << "Run env ...\n"
-      Rake::Task['nppes:start_background_env'].invoke
+      #Rake::Task['nppes:start_background_env'].invoke
+      Nppes::UpdatePack::Pack.init_base
     end
   end
 
@@ -72,7 +73,9 @@ namespace :nppes do
   desc 'Start background env. Please specify RAILS_ENV. By default used "development" env'
   task :start_background_env do
     #`cd #{Rails.root} | RAILS_ENV=#{ENV['RAILS_ENV'] || 'development'} bin/delayed_job start`
-    Rake::Task['jobs:work'].invoke
+    #fork do 
+      #Rake::Task['jobs:work'].invoke
+    #end
   end
 
   desc 'Stop background env'
@@ -83,13 +86,13 @@ namespace :nppes do
 
   desc 'Run init base by info'
   task :init_base do
-Delayed::Worker.max_run_time=40.hours
+    Delayed::Worker.max_run_time=40.hours
     run_env
-module Nppes
-def self.logger
-@@logger = Logger.new(File.join(__dir__,'delayed_job.log'))  
-end
-end
+    module Nppes
+      def self.logger
+        @@logger = Logger.new(File.join(__dir__,'delayed_job.log'))  
+      end
+    end
     Nppes.background_init
   end
 
@@ -111,4 +114,3 @@ end
     Nppes.background_update
   end
 end
-

@@ -1,0 +1,174 @@
+Run env ...
+elapsed: 3.293530977
+total_records: 100
+           | require 'rblineprof'
+           | module Nppes
+           |   module UpdatePack
+           |     class Data < UpdatePack::Base
+           |       def initialize(data_file)
+           |         @file = data_file
+           |       end
+           | 
+           |       def proceed
+           |          profile = lineprof(/./) do
+           | 
+  5000.0ms |             sleep 5
+           | 
+           |           npi_batch=[]
+           |           records_total=0
+     0.0ms |            previous_timemark=Time.now
+           |         parse(@file) do |row|
+           |           if npi_batch.size >= 100
+           |             records_total+=100
+     0.0ms |              puts "elapsed: #{Time.now - previous_timemark}"
+     0.0ms |              previous_timemark=Time.now
+     0.0ms |              puts "total_records: #{records_total}"
+   633.0ms |               NpIdentifier.import npi_batch
+     0.0ms |               npi_batch.clear
+           |              break
+           |           end
+  3095.0ms |            processed_row=proceed_row(row)
+           |           npi_batch << processed_row if processed_row  #packing npi_batch
+           |         end
+           |        end
+           | 
+           |         File.readlines(__FILE__).each_with_index do |line, num|
+           |           if (sample = profile[__FILE__][num+1]).first > 0 
+           |             printf "% 8.1fms |  %s", sample.first/1000, line
+           |           else
+           |             printf "           | %s", line
+           |           end
+           |         end
+           | 
+           |       end
+           | 
+           |       def proceed_row(row, required_fields = RequiredFields)
+    30.0ms |          @fields = split_row(row)
+           |         #return nil if Nppes::NpIdentifier.where(npi: @fields[0]).first
+   277.0ms |          npi = Nppes::NpIdentifier.new(npi: @fields[0])
+           | 
+   228.0ms |          required_fields.fields.each_pair { |k, v| npi.send("#{k}=", prepare_value(@fields, v)) }
+           | 
+           |         # for submodels
+  2556.0ms |          required_fields.relations.each_pair do |k, v|
+  2555.0ms |            v.each do |entity|
+   890.0ms |              relation = npi.send(k).new
+   558.0ms |              entity.each_pair {|name, num| relation.send("#{name}=", prepare_value(@fields, num))}
+  1060.0ms |              unless relation.valid?
+    37.0ms |                npi.send(k).delete(relation)
+           |               break
+           |             end
+           |           end
+           |         end
+           | 
+           |       #  npi.save if npi.valid?
+           |         npi
+           |       end
+           | 
+           |       protected
+           |         def prepare_value(fields, variants)
+     5.0ms |            if variants.is_a? String
+           |             result=variants
+     4.0ms |            elsif variants.is_a? Array
+     8.0ms |              variant = variants.detect {|v| fields[v].present? }
+           |             result=variant ? fields[variant] : ''
+           |           else
+           |             result=fields[variants]
+           |           end
+           | 
+    32.0ms |            if result.is_a?(String) && result.scan(/\d\d\/\d\d\/\d\d\d\d/).present?
+     2.0ms |              result=Date.strptime result, "%m/%d/%Y"
+           |           end
+    33.0ms |            result.blank? ? nil: result
+           |         end
+           |     end
+           |   end
+           | end
+dark@soulspark:~/work/odesk/HIPS/npi_from_apps/npi-api$ bundle exec rake nppes:init_base
+Run env ...
+elapsed: 29.617527955
+total_records: 1000
+           | require 'rblineprof'
+           | module Nppes
+           |   module UpdatePack
+           |     class Data < UpdatePack::Base
+           |       def initialize(data_file)
+           |         @file = data_file
+           |       end
+           | 
+           |       def proceed
+           |          profile = lineprof(/./) do
+           | 
+  5000.0ms |             sleep 5
+           | 
+           |           npi_batch=[]
+           |           records_total=0
+     0.0ms |            previous_timemark=Time.now
+           |         parse(@file) do |row|
+           |           if npi_batch.size >= 1000
+           |             records_total+=1000
+     0.0ms |              puts "elapsed: #{Time.now - previous_timemark}"
+     0.0ms |              previous_timemark=Time.now
+     0.0ms |              puts "total_records: #{records_total}"
+  6182.0ms |               NpIdentifier.import npi_batch
+     0.0ms |               npi_batch.clear
+           |              break
+           |           end
+ 28476.0ms |            processed_row=proceed_row(row)
+           |           npi_batch << processed_row if processed_row  #packing npi_batch
+           |         end
+           |        end
+           | 
+           |         File.readlines(__FILE__).each_with_index do |line, num|
+           |           if (sample = profile[__FILE__][num+1]).first > 0 
+           |             printf "% 8.1fms |  %s", sample.first/1000, line
+           |           else
+           |             printf "           | %s", line
+           |           end
+           |         end
+           | 
+           |       end
+           | 
+           |       def proceed_row(row, required_fields = RequiredFields)
+   347.0ms |          @fields = split_row(row)
+           |         #return nil if Nppes::NpIdentifier.where(npi: @fields[0]).first
+  1521.0ms |          npi = Nppes::NpIdentifier.new(npi: @fields[0])
+           | 
+  2306.0ms |          required_fields.fields.each_pair { |k, v| npi.send("#{k}=", prepare_value(@fields, v)) }
+           | 
+           |         # for submodels
+ 24275.0ms |          required_fields.relations.each_pair do |k, v|
+ 24265.0ms |            v.each do |entity|
+  8577.0ms |              relation = npi.send(k).new
+  4711.0ms |              entity.each_pair {|name, num| relation.send("#{name}=", prepare_value(@fields, num))}
+ 10530.0ms |              unless relation.valid?
+   360.0ms |                npi.send(k).delete(relation)
+           |               break
+           |             end
+           |           end
+           |         end
+           | 
+           |       #  npi.save if npi.valid?
+           |         npi
+           |       end
+           | 
+           |       protected
+           |         def prepare_value(fields, variants)
+    52.0ms |            if variants.is_a? String
+           |             result=variants
+    43.0ms |            elsif variants.is_a? Array
+    86.0ms |              variant = variants.detect {|v| fields[v].present? }
+           |             result=variant ? fields[variant] : ''
+           |           else
+           |             result=fields[variants]
+           |           end
+           | 
+   318.0ms |            if result.is_a?(String) && result.scan(/\d\d\/\d\d\/\d\d\d\d/).present?
+    17.0ms |              result=Date.strptime result, "%m/%d/%Y"
+           |           end
+   323.0ms |            result.blank? ? nil: result
+           |         end
+           |     end
+           |   end
+           | end
+
