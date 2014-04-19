@@ -14,6 +14,9 @@ gem 'delayed_job_active_record'
 gem 'json'
 
 #gem 'nppes', github: 'jeyboy/nppes', branch: 'master' #github: 'Pelesend/nppes'
-gem 'nppes', path: '/home/dark/work/odesk/hisp_current/nppes', branch: 'npiapi_fixes' #github: 'Pelesend/nppes'
+#gem 'nppes', path: '/home/dark/work/odesk/hisp_current/nppes', branch: 'npiapi_fixes' #github: 'Pelesend/nppes'
+gem 'nppes', github: 'git@github.com:msilen/nppes.git', branch: 'npiapi_fixes'
 gem 'ruby-prof'
 gem 'rblineprof'
+
+gem 'capistrano'

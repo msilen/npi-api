@@ -6,6 +6,7 @@ require 'active_record'
 require 'yaml'
 require 'nppes'
 require 'byebug'
+require 'better_errors'
 require_relative 'env'
 
 
