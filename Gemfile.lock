@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/git@github.com:msilen/nppes.git.git
+  remote: git://github.com/msilen/nppes.git
   revision: 294c55ad735fd442018305065bc4d9084c50ff74
   branch: npiapi_fixes
   specs:
