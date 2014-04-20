@@ -5,6 +5,9 @@ set :application, 'npiapi'
 set :repo_url, 'git@github.com:msilen/npi-api.git'
 set :branch, 'from_apps'
 
+
+set :rvm_type, :system
+
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
 
