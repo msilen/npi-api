@@ -12,6 +12,7 @@ gem 'binding_of_caller'
 gem 'delayed_job_active_record'
 
 gem 'json'
+gem 'unicorn'
 
 #gem 'nppes', github: 'jeyboy/nppes', branch: 'master' #github: 'Pelesend/nppes'
 #gem 'nppes', path: '/home/dark/work/odesk/hisp_current/nppes', branch: 'npiapi_fixes' #github: 'Pelesend/nppes'
