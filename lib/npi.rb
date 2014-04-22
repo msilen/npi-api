@@ -6,12 +6,13 @@ require 'active_record'
 require 'yaml'
 require 'nppes'
 require 'byebug'
+require 'better_errors'
 require_relative 'env'
 
 
-class Speciality < ActiveRecord::Base
-  has_many :provider_specialities
-end
+#class Speciality < ActiveRecord::Base
+  #has_many :provider_specialities
+#end
 
 class Npi < Sinatra::Base
   register Sinatra::ConfigFile
@@ -40,9 +41,10 @@ def get_data(npi_id)
         }
       end
 
+#Speciality.where(name: license.decoded_speciality).first.try(:id),
       if (license = @npi.np_licenses.first)
         @speciality = {
-          speciality_id: Speciality.where(name: license.decoded_speciality).first.try(:id),
+          speciality_id: 123456,
           license_number: license.license_number,
           state: license.decoded_state,
           country: 'United States'
