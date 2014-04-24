@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/msilen/nppes.git
-  revision: 294c55ad735fd442018305065bc4d9084c50ff74
+  revision: 97f2d4100c407811f210643c08e3bcdc91b55a0d
   branch: npiapi_fixes
   specs:
     nppes (0.3.3.4)
