@@ -1,5 +1,6 @@
 # config valid only for Capistrano 3.1
 lock '3.2.0'
+#require 'byebug'
 
 set :application, 'npiapi'
 set :repo_url, 'git@github.com:msilen/npi-api.git'
@@ -36,16 +37,35 @@ set :linked_files, %w{lib/database.yml}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
 
 # Default value for keep_releases is 5
- set :keep_releases, 5
+set :keep_releases, 5
 
 namespace :deploy do
+  desc 'start appilcation'
+  task :start do
+    on roles(:app) do
+      within current_path do
+        execute :bundle, "exec unicorn -c unicorn.rb -D -l 0.0.0.0:7678 "
+      end
+    end
+  end
+
+  task :stop do
+    on roles(:app) do
+      within current_path do
+        execute :kill,"-QUIT `cat tmp/pids/unicorn.pid`"
+      end
+    end
+  end
 
   desc 'Restart application'
   task :restart do
-    on roles(:app), in: :sequence, wait: 5 do
+    on roles(:app) do
+      within current_path do
+        execute :kill,"-HUP `cat tmp/pids/unicorn.pid`" #TODO: USR2 ? kill other master
+      end
+    end
       # Your restart mechanism here, for example:
       # execute :touch, release_path.join('tmp/restart.txt')
-    end
   end
 
   after :publishing, :restart
@@ -58,5 +78,4 @@ namespace :deploy do
       # end
     end
   end
-
 end
